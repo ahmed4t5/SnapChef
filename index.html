@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SnapChef - Premium AI Culinary Dashboard (Dark Mode)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#fff5f2',
+                            100: '#ffe6df',
+                            400: '#ff7333',
+                            500: '#ff4f00', /* Fiery Orange */
+                            600: '#e03d00',
+                            700: '#bd3000',
+                            950: '#1a0800',  
+                        },
+                        wood: {
+                            50: '#faf8f5',  
+                            100: '#f5efe6', 
+                            200: '#eadecc',
+                            900: '#403024', 
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        display: ['Georgia', 'serif'] 
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts for premium typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700&family=Playfair+Display:ital,wght=0,600;0,700;1,600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0c0c0c;
+        }
+        .font-display {
+            font-family: 'Playfair Display', serif;
+        }
+        /* Custom sweep animation for the laser line */
+        @keyframes sweep {
+            0% { top: 0%; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+        .laser-sweep {
+            animation: sweep 2.5s infinite ease-in-out;
+        }
+        /* Pulse scan glow */
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.15; }
+            50% { opacity: 0.35; }
+        }
+        .glow-overlay {
+            animation: pulse-glow 2s infinite ease-in-out;
+        }
+        /* Hide scrollbars but keep functionality */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="text-neutral-200 min-h-screen flex flex-col antialiased">
+
+    <!-- Header & Navigation -->
+    <header class="border-b border-neutral-800 bg-[#121212]/90 backdrop-blur-md sticky top-0 z-40 px-4 lg:px-8 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+    <div class="bg-brand-500 text-black p-2 rounded-xl shadow-lg shadow-brand-500/20 flex items-center justify-center">
+        <svg class="w-8 h-8" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g fill="currentColor">
+                <path d="M421.4 63.9c-8.8-8.8-22.9-9.5-32.5-1.7L228.3 194.8l27.1 27.1 57.3-48.4 12.2 12.2-57.3 48.4 33.1 33.1c16.3-24.9 44.5-70.4 117-172.9 8.2-11.6 4.7-27.6-6.3-38.4zM128.5 356.4l-42.8 42.8c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l42.8-42.8-45.3-45.3z"/>
+                
+                <path d="M129.5 73.1c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l51.2 51.2c-12.3 18.2-11 43 4.1 58.1l23.7 23.7 44.2-44.2-22.3-22.3c-7.3-7.3-8.4-18.7-2.9-27.2l-64.1-64.1zM148.8 152.6l-50.9-50.9c-5.9-5.9-5.9-15.4 0-21.2s15.4-5.9 21.2 0l50.9 50.9-21.2 21.2zM181.1 184.9l-50.9-50.9c-5.9-5.9-5.9-15.4 0-21.2s15.4-5.9 21.2 0l50.9 50.9-21.2 21.2zM337.3 339.6l44.4 44.4c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-44.4-44.4-45.3 45.3z"/>
+            </g>
+            
+            <g fill="currentColor">
+                <path d="M344 248h-23.2c-6.2-13.7-20-24-36.8-24h-56c-16.8 0-30.6 10.3-36.8 24H168c-13.3 0-24 10.7-24 24v104c0 13.3 10.7 24 24 24h176c13.3 0 24-10.7 24-24V272c0-13.3-10.7-24-24-24zm-88 120c-26.5 0-48-21.5-48-48s21.5-48 48-48 48 21.5 48 48-21.5 48-48 48zm-76-80c-6.6 0-12-5.4-12-12s5.4-12 12-12 12 5.4 12 12-5.4 12-12 12z"/>
+                <circle cx="256" cy="320" r="28"/>
+            </g>
+        </svg>
+    </div>
+    <div>
+        <h1 class="font-display text-2xl lg:text-3xl font-bold tracking-tight text-brand-500">SnapChef</h1>
+        <p class="text-[10px] tracking-widest text-neutral-400 uppercase font-semibold">Gemini Culinary Vision</p>
+    </div>
+</div>
+
+            <!-- Global Actions -->
+            <div class="flex items-center space-x-4">
+                <div class="hidden sm:flex items-center space-x-2 px-3 py-1.5 rounded-full bg-neutral-800 border border-neutral-700 text-xs font-medium text-neutral-300">
+                    <span id="api-status-dot" class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
+                    <span id="api-status-text" class="text-neutral-300">Local Mock Mode</span>
+                </div>
+                
+                <button onclick="resetDashboard()" class="text-xs font-semibold text-neutral-300 hover:text-white border border-neutral-700 hover:border-brand-500 px-3 py-1.5 rounded-lg transition-all bg-neutral-800">
+                    Reset Scan
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 lg:px-8 py-6 lg:py-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- LEFT SIDEBAR: Scan History & Journal -->
+        <aside class="col-span-1 lg:col-span-2 space-y-4">
+            <div class="bg-[#121212] border border-neutral-800 rounded-2xl p-4 flex flex-col space-y-3">
+                <div class="flex items-center justify-between border-b border-neutral-800 pb-2">
+                    <h3 class="text-xs font-bold text-brand-500 uppercase tracking-wider flex items-center space-x-1.5">
+                        <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+                        <span>Scan Journal</span>
+                    </h3>
+                    <span id="history-count" class="bg-neutral-800 text-brand-500 text-[10px] font-bold px-2 py-0.5 rounded-full border border-neutral-700">1</span>
+                </div>
+                
+                <!-- Scrollable Scan List -->
+                <div id="history-container" class="flex lg:flex-col gap-3 overflow-x-auto lg:overflow-x-visible no-scrollbar pb-2 lg:pb-0 max-h-none lg:max-h-[480px] lg:overflow-y-auto">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+        </aside>
+
+        <!-- MIDDLE SECTION: Upload Zone, Scanner & Details Panel -->
+        <div class="col-span-1 lg:col-span-7 space-y-8">
+            
+            <!-- 2. Scanner Hero Panel (The Interaction Zone) -->
+            <section id="scanner-panel" class="bg-[#121212] border-2 border-dashed border-neutral-800 rounded-2xl p-6 lg:p-10 text-center transition-all hover:border-brand-500/50 hover:shadow-xl hover:shadow-brand-500/5 duration-300 relative group">
+                <input type="file" id="file-input" accept="image/*" class="hidden" onchange="handleFileSelect(event)">
+                
+                <div id="drop-zone" class="cursor-pointer py-10 flex flex-col items-center justify-center space-y-4" onclick="document.getElementById('file-input').click()">
+                    <!-- Camera Graphic Container -->
+                    <div class="w-20 h-20 bg-neutral-800 rounded-2xl flex items-center justify-center text-brand-500 group-hover:scale-110 group-hover:bg-neutral-700 transition-all duration-300 border border-neutral-700">
+                        <svg class="w-10 h-10 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-lg text-white">Drag & Drop Your Food Photo</h3>
+                        <p class="text-sm text-neutral-400 mt-1">or <span class="text-brand-500 font-medium underline">browse your local files</span> to begin AI discovery</p>
+                    </div>
+                    <div class="text-xs text-neutral-300 bg-neutral-800 border border-neutral-700 px-3 py-1.5 rounded-full mt-2">
+                        Supports JPEG, PNG, WEBP (Max 10MB)
+                    </div>
+                </div>
+
+                <!-- Secondary Action Option -->
+                <div class="mt-4 pt-6 border-t border-neutral-800 flex flex-col sm:flex-row items-center justify-center gap-3">
+                    <span class="text-xs text-neutral-400 font-medium">No ingredients handy?</span>
+                    <button onclick="simulateCameraSnap()" class="inline-flex items-center space-x-2 bg-neutral-800 hover:bg-neutral-700 text-brand-500 hover:text-white font-medium text-xs px-4 py-2 rounded-xl transition-all border border-brand-500/30 hover:border-brand-500">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                        <span>Simulate Camera Snap (Tonkotsu Ramen Demo)</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- 3. The Analysis Animation Block (Hidden initially, active during scan) -->
+            <section id="scanning-panel" class="hidden bg-[#121212] border border-neutral-800 rounded-3xl p-6 relative overflow-hidden shadow-lg shadow-neutral-900">
+                <div class="relative w-full h-80 md:h-[400px] bg-neutral-950 rounded-2xl overflow-hidden flex items-center justify-center shadow-inner">
+                    <!-- Image to sweep -->
+                    <img id="scanned-image-preview" src="" alt="Scanning" class="w-full h-full object-cover opacity-60">
+                    
+                    <!-- Futuristic Laser Overlay -->
+                    <div class="absolute inset-0 glow-overlay bg-gradient-to-b from-transparent via-emerald-500/15 to-transparent pointer-events-none"></div>
+                    <div class="absolute left-0 w-full h-[6px] bg-emerald-400 shadow-[0_0_15px_#10b981,0_0_25px_#10b981] laser-sweep z-10"></div>
+                    
+                    <!-- Progress Card -->
+                    <div class="absolute bottom-6 left-6 right-6 bg-neutral-900/95 border border-neutral-700 backdrop-blur-sm rounded-xl p-4 flex items-center justify-between z-20">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-3 h-3 bg-emerald-500 rounded-full animate-ping"></div>
+                            <span class="text-sm font-semibold text-white tracking-wide">Analyzing Dish via Gemini Vision...</span>
+                        </div>
+                        <div class="text-xs font-mono text-neutral-400">Model: Gemini 2.5 Flash</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. The Reveal Dashboard & 5. Interactive Central Tabs Panel -->
+            <section id="results-panel" class="hidden space-y-6 animate-fade-in">
+                
+                <!-- Main Header Status -->
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-neutral-900 border border-neutral-800 p-4 rounded-2xl">
+                    <div class="flex items-center space-x-3">
+                        <span class="flex h-3 w-3 relative">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                        </span>
+                        <div>
+                            <h4 class="text-sm font-semibold text-brand-500">Scan Complete & Verified</h4>
+                            <p class="text-xs text-neutral-400 font-medium" id="scan-timestamp">Dish verified 2 seconds ago</p>
+                        </div>
+                    </div>
+                    <button onclick="resetDashboard()" class="mt-2 sm:mt-0 text-xs font-semibold text-neutral-300 hover:text-brand-500 flex items-center space-x-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 19l-2.762-2.762" /></svg>
+                        <span>Scan Another</span>
+                    </button>
+                </div>
+
+                <!-- Detailed Split Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+                    
+                    <!-- Left Column: Media & Quick Stats Card -->
+                    <div class="md:col-span-4 bg-[#121212] border border-neutral-800 rounded-2xl p-4 space-y-4">
+                        <div class="aspect-square w-full rounded-xl overflow-hidden bg-neutral-950 border border-neutral-800 relative shadow-sm">
+                            <img id="result-photo" src="" alt="Dish Snapshot" class="w-full h-full object-cover">
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <h2 id="result-dish-name" class="font-display text-2xl font-bold text-white">Tonkotsu Ramen</h2>
+                                <p id="result-origin" class="text-sm text-neutral-400 flex items-center space-x-1.5 mt-1">
+                                    <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                                    <span class="text-neutral-300">Fukuoka, Japan</span>
+                                </p>
+                            </div>
+
+                            <hr class="border-neutral-800">
+
+                            <!-- Details list -->
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between text-xs">
+                                    <span class="text-neutral-400 font-medium">Invented</span>
+                                    <span id="result-invented" class="text-white font-semibold bg-neutral-850 border border-neutral-800 px-2.5 py-1 rounded-md">Approx. 1940s</span>
+                                </div>
+                                <div class="flex items-center justify-between text-xs">
+                                    <span class="text-neutral-400 font-medium">Calories</span>
+                                    <span id="result-calories" class="text-white font-semibold flex items-center space-x-1 bg-brand-500/10 text-brand-500 px-2.5 py-1 rounded-md border border-brand-500/20">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                                        <span>~850 kcal</span>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Fun Fact -->
+                            <div class="bg-neutral-900 border border-neutral-800 rounded-xl p-3">
+                                <span class="text-[10px] tracking-wider uppercase font-extrabold text-brand-500 flex items-center space-x-1 mb-1">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l.707.707m2.828 9.9a5 5 0 113.536 0V21h-7v-4.043z" /></svg>
+                                    <span>Fun Culinary Fact</span>
+                                </span>
+                                <p id="result-fun-fact" class="text-xs leading-relaxed text-neutral-300">The deep milky, incredibly rich broth is achieved specifically by boiling select pork marrow bones for up to 18 hours.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Interactive Central Panel with Tabs -->
+                    <div class="md:col-span-8 bg-[#121212] border border-neutral-800 rounded-2xl overflow-hidden flex flex-col min-h-[500px]">
+                        
+                        <!-- Premium Tab Headers -->
+                        <div class="border-b border-neutral-800 bg-neutral-950 flex overflow-x-auto no-scrollbar">
+                            <button onclick="switchTab('details')" id="tab-details-btn" class="flex-1 py-4 px-6 text-sm font-semibold border-b-2 border-brand-500 text-brand-500 transition-all text-center whitespace-nowrap">
+                                🍳 Dish Overview
+                            </button>
+                            <button onclick="switchTab('ingredients')" id="tab-ingredients-btn" class="flex-1 py-4 px-6 text-sm font-semibold border-b-2 border-transparent text-neutral-400 hover:text-white hover:bg-neutral-900 transition-all text-center whitespace-nowrap">
+                                📝 Ingredients <span id="ingredient-badge" class="ml-1 bg-neutral-800 text-brand-500 text-[10px] px-1.5 py-0.5 rounded-full font-bold border border-neutral-700">6</span>
+                            </button>
+                            <button onclick="switchTab('steps')" id="tab-steps-btn" class="flex-1 py-4 px-6 text-sm font-semibold border-b-2 border-transparent text-neutral-400 hover:text-white hover:bg-neutral-900 transition-all text-center whitespace-nowrap">
+                                ⏱️ Cooking Directions
+                            </button>
+                        </div>
+
+                        <!-- Tab Contents Container -->
+                        <div class="p-6 flex-1 flex flex-col justify-between">
+                            
+                            <!-- Tab Content: Overview -->
+                            <div id="tab-details" class="space-y-6">
+                                <div class="space-y-2">
+                                    <h3 class="text-lg font-bold text-white">Introduction to the Recipe</h3>
+                                    <p id="overview-para" class="text-sm text-neutral-300 leading-relaxed">
+                                        Tonkotsu ramen (豚骨ラーメン) is an ultra-savory noodle soup dish with a heavy, thick broth created from marrow bones, fat, and collagen. Enjoyed globally, it requires persistent temperature control to perfectly emulsify the pork fat into the broth base.
+                                    </p>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="p-3.5 bg-neutral-900 border border-neutral-800 rounded-xl">
+                                        <div class="text-xs text-neutral-400 font-medium">Difficulty</div>
+                                        <div id="overview-difficulty" class="text-sm font-bold text-white mt-1">Challenging (Mastery)</div>
+                                    </div>
+                                    <div class="p-3.5 bg-neutral-900 border border-neutral-800 rounded-xl">
+                                        <div class="text-xs text-neutral-400 font-medium">Prep Time</div>
+                                        <div id="overview-prep-time" class="text-sm font-bold text-white mt-1">~12 - 18 Hours</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tab Content: Ingredients Checklist -->
+                            <div id="tab-ingredients" class="hidden space-y-4">
+                                <div class="flex items-center justify-between pb-2 border-b border-neutral-800">
+                                    <h3 class="text-lg font-bold text-white">Mise-en-place Checklist</h3>
+                                    <button onclick="toggleAllIngredients()" class="text-xs text-brand-500 hover:underline font-semibold">Toggle All</button>
+                                </div>
+                                
+                                <div id="ingredients-list" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    <!-- Populated dynamically -->
+                                </div>
+                            </div>
+
+                            <!-- Tab Content: Step-by-Step Instructions -->
+                            <div id="tab-steps" class="hidden flex-1 flex flex-col justify-between space-y-6">
+                                <div class="space-y-4 flex-1">
+                                    <div class="flex items-center justify-between">
+                                        <span id="step-indicator" class="text-xs font-semibold text-neutral-400 tracking-wider uppercase">Step 1 of 6</span>
+                                        <div class="flex space-x-1.5" id="step-dots">
+                                            <!-- Steps visual indicator -->
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Steps Body Panel -->
+                                    <div class="p-5 bg-neutral-900 border border-neutral-800 rounded-2xl relative" id="active-step-container">
+                                        <h4 id="active-step-title" class="text-base font-bold text-brand-500">Prepare Pork Bones</h4>
+                                        <p id="active-step-body" class="text-sm text-neutral-200 mt-2 leading-relaxed">Boil pork bones intensely for 30 minutes in a large stockpot. Drain and clean off all coagulation and blood impurities.</p>
+                                    </div>
+
+                                    <!-- Step Navigation -->
+                                    <div class="flex items-center justify-between pt-2">
+                                        <button onclick="navigateStep(-1)" id="prev-step-btn" class="inline-flex items-center space-x-1 text-xs font-bold text-neutral-400 hover:text-white disabled:opacity-30 disabled:pointer-events-none transition-all bg-neutral-900 px-3 py-2 rounded-lg border border-neutral-800">
+                                            <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" /></svg>
+                                            <span>Previous Step</span>
+                                        </button>
+                                        <button onclick="navigateStep(1)" id="next-step-btn" class="inline-flex items-center space-x-1 text-xs font-bold text-brand-500 hover:text-white transition-all bg-neutral-900 px-4 py-2 rounded-lg border border-brand-500/20 hover:border-brand-500">
+                                            <span>Next Step</span>
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" /></svg>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Step-by-Step Integrated Cooking Timer -->
+                                <div class="bg-neutral-950 text-white rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 border border-neutral-800 shadow-md">
+                                    <div class="flex items-center space-x-3.5">
+                                        <!-- Ring progress display -->
+                                        <div class="relative w-12 h-12 flex items-center justify-center">
+                                            <svg class="w-full h-full transform -rotate-90">
+                                                <circle cx="24" cy="24" r="20" class="text-neutral-800" stroke-width="3" fill="none" stroke="currentColor"/>
+                                                <circle id="timer-progress-ring" cx="24" cy="24" r="20" class="text-brand-500 transition-all duration-300" stroke-width="3" stroke-dasharray="125.6" stroke-dashoffset="0" fill="none" stroke="currentColor"/>
+                                            </svg>
+                                            <span class="absolute text-[10px] font-bold uppercase text-neutral-400">Timer</span>
+                                        </div>
+                                        <div>
+                                            <div class="text-xs text-neutral-400 font-semibold tracking-wider uppercase">Active Helper Timer</div>
+                                            <div id="timer-display" class="font-mono text-xl font-bold tracking-widest text-brand-500">06:00</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-center space-x-2">
+                                        <button id="timer-toggle-btn" onclick="toggleTimer()" class="bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs px-4 py-2 rounded-xl transition-all shadow-md shadow-brand-500/20">
+                                            Start
+                                        </button>
+                                        <button onclick="resetTimer()" class="bg-neutral-900 hover:bg-neutral-800 text-neutral-300 hover:text-white font-bold text-xs px-3 py-2 rounded-xl border border-neutral-800 transition-all">
+                                            Reset
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+        <!-- RIGHT SIDE PANEL: AI Contextual Assistant Chatbot -->
+        <div class="col-span-1 lg:col-span-3 bg-[#121212] border border-neutral-800 rounded-3xl overflow-hidden flex flex-col h-[650px] shadow-lg shadow-neutral-950">
+            
+            <!-- Sidebar Header -->
+            <div class="bg-neutral-900 border-b border-neutral-800 p-4 space-y-3">
+                <div class="flex items-center space-x-2.5">
+                    <div class="bg-brand-500 text-white p-1.5 rounded-lg">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
+                    </div>
+                    <div>
+                        <h2 class="font-bold text-sm text-white">SnapChef Gemini Assistant</h2>
+                        <p class="text-[10px] text-neutral-400 font-semibold">Model: Gemini 2.5 Flash</p>
+                    </div>
+                </div>
+
+                <!-- API Key Configuration Expandable Block -->
+                <div class="bg-neutral-950 border border-neutral-800 rounded-xl p-2.5">
+                    <div class="flex items-center justify-between cursor-pointer" onclick="toggleApiKeySection()">
+                        <span class="text-[10px] font-bold text-neutral-400 uppercase tracking-wider flex items-center space-x-1">
+                            <svg class="w-3.5 h-3.5 text-neutral-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                            <span>Configure Gemini API Key</span>
+                        </span>
+                        <svg id="key-arrow" class="w-3 h-3 text-neutral-400 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" /></svg>
+                    </div>
+                    
+                    <div id="key-section" class="hidden mt-2 pt-2 border-t border-neutral-800 space-y-2">
+                        <p class="text-[10px] text-neutral-400">Provide an API Key to enable real-time analysis of ANY uploaded image!</p>
+                        <div class="flex space-x-1.5">
+                            <input type="password" id="api-key-input" placeholder="AIzaSy..." class="flex-1 text-xs bg-neutral-900 border border-neutral-800 focus:outline-none focus:border-brand-500 rounded px-2.5 py-1.5 font-mono text-white">
+                            <button onclick="saveApiKey()" class="bg-brand-500 hover:bg-brand-600 text-white text-[11px] font-bold px-3 py-1.5 rounded transition-all">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat History Area -->
+            <div id="chat-history" class="flex-1 p-4 overflow-y-auto space-y-4 no-scrollbar bg-neutral-950">
+                <!-- Greeting Message -->
+                <div class="flex items-start space-x-2.5">
+                    <div class="w-7 h-7 bg-brand-500 rounded-full flex items-center justify-center text-white text-[10px] shrink-0 font-bold">AI</div>
+                    <div class="bg-neutral-900 border border-neutral-800 rounded-2xl rounded-tl-none p-3 max-w-[85%] text-xs text-neutral-200 shadow-sm leading-relaxed">
+                        Greetings! I'm the <span class="font-bold text-brand-500">SnapChef Gemini Assistant</span>. How can I help with this recipe? Ask me about ingredient substitutes, culinary complexity, or wine pairings!
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Input Bar -->
+            <div class="p-3 border-t border-neutral-800 bg-neutral-900 flex items-center space-x-2">
+                <input type="text" id="chat-input" onkeydown="handleChatSubmit(event)" placeholder="Ask about ingredients or adjustments..." class="flex-1 text-xs px-3 py-2.5 border border-neutral-800 rounded-xl focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 bg-neutral-950 text-white">
+                <button onclick="submitChatMessage()" class="bg-brand-500 hover:bg-brand-600 text-white p-2.5 rounded-xl transition-all shadow-md shadow-brand-500/10 shrink-0">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                </button>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Custom Alert Container -->
+    <div id="alert-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm transition-all">
+        <div class="bg-neutral-900 border border-neutral-800 rounded-3xl p-6 max-w-sm w-full mx-4 shadow-2xl text-center space-y-4">
+            <div class="w-12 h-12 bg-rose-950/40 border border-rose-900 text-rose-500 rounded-full flex items-center justify-center mx-auto">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+            </div>
+            <div>
+                <h4 id="alert-title" class="font-bold text-white">Action Required</h4>
+                <p id="alert-message" class="text-xs text-neutral-400 mt-1">Something occurred while managing operations.</p>
+            </div>
+            <button onclick="closeAlert()" class="w-full bg-brand-500 hover:bg-brand-600 text-white text-xs font-bold py-2.5 rounded-xl transition-all">
+                Acknowledge
+            </button>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Global API key (injected by the environment at runtime)
+        const apiKey = "";
+
+        // In-Memory App State
+        let currentDish = {
+            dishName: "Tonkotsu Ramen",
+            origin: "Fukuoka, Japan",
+            invented: "Approx. 1940s (Hakata-style)",
+            estimatedCalories: "~850",
+            funFact: "The rich broth is achieved by boiling pork bones for up to 18 hours.",
+            ingredients: [
+                "Pork Bones (Marrow & neck)",
+                "Chashu (Rolled pork belly)",
+                "Nori (Dried seaweed sheets)",
+                "Soy Sauce & Mirin (Tares base)",
+                "Ajitsuke Egg (Marinated soft-boiled)",
+                "Fresh Ramen Noodles"
+            ],
+            steps: [
+                {
+                    title: "Prepare Pork Bones",
+                    body: "Boil pork bones intensely for 30 minutes in a large stockpot. Drain and clean off all coagulation and blood impurities.",
+                    timerSeconds: 300 
+                },
+                {
+                    title: "Broth Simmer Phase",
+                    body: "Fill pot with fresh water, onion, garlic, and ginger. Boil broth steadily for up to 12-18 hours to release collagens.",
+                    timerSeconds: 480 
+                },
+                {
+                    title: "Marinate Eggs",
+                    body: "Soft-boil eggs for exactly 6 minutes. Cool instantly in ice water, peel, and marinate in soy-mirin mixture.",
+                    timerSeconds: 360 
+                },
+                {
+                    title: "Slice Chashu Pork",
+                    body: "Simmer pork belly in a sweet soy-glaze, chill slightly, then slice into elegant 1/4-inch slices.",
+                    timerSeconds: 120 
+                },
+                {
+                    title: "Cook Noodles",
+                    body: "Boil fresh thin noodles for 1 minute and 30 seconds to ensure a perfect bite (Katakata-style).",
+                    timerSeconds: 90 
+                },
+                {
+                    title: "Assemble Bowl",
+                    body: "Ladle soup base, add noodles, align Chashu, halved egg, Nori, and drizzle with black garlic oil (Mayu). Enjoy hot!",
+                    timerSeconds: 60 
+                }
+            ]
+        };
+
+        // Scan Journal State tracking previous dishes
+        let scanHistory = [
+            {
+                id: "ramen-default",
+                dishName: "Tonkotsu Ramen",
+                origin: "Fukuoka, Japan",
+                invented: "Approx. 1940s (Hakata-style)",
+                estimatedCalories: "~850",
+                funFact: "The rich broth is achieved by boiling pork bones for up to 18 hours.",
+                ingredients: [
+                    "Pork Bones (Marrow & neck)",
+                    "Chashu (Rolled pork belly)",
+                    "Nori (Dried seaweed sheets)",
+                    "Soy Sauce & Mirin (Tares base)",
+                    "Ajitsuke Egg (Marinated soft-boiled)",
+                    "Fresh Ramen Noodles"
+                ],
+                steps: [
+                    { title: "Prepare Pork Bones", body: "Boil pork bones intensely for 30 minutes in a large stockpot. Drain and clean off all coagulation.", timerSeconds: 300 },
+                    { title: "Broth Simmer Phase", body: "Fill pot with fresh water, onion, garlic, and ginger. Simmer for up to 18 hours.", timerSeconds: 480 },
+                    { title: "Marinate Eggs", body: "Soft-boil eggs for 6 minutes. Cool in ice water, peel, and marinate in sweet soy.", timerSeconds: 360 },
+                    { title: "Assemble Bowl", body: "Ladle hot soup base, add noodles, slice Chashu, halved soft egg, Nori, and green scallions.", timerSeconds: 60 }
+                ],
+                imageSrc: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?q=80&w=600&auto=format&fit=crop",
+                timestamp: "Just Now"
+            }
+        ];
+
+        let activeTab = 'details';
+        let currentStepIndex = 0;
+        let originalSelectedImage = null;
+
+        // Custom Timer Controls
+        let timerSecondsLeft = 0;
+        let timerTotalDuration = 0;
+        let timerInterval = null;
+        let timerIsActive = false;
+
+        // API Configuration state
+        let savedApiKey = "";
+
+        // Helper to retrieve active API Key
+        function getApiKey() {
+            return savedApiKey || apiKey;
+        }
+
+        // Setup Drag & Drop Zone
+        const dropZone = document.getElementById('drop-zone');
+
+        if (dropZone) {
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropZone.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    dropZone.classList.add('bg-neutral-800', 'border-brand-500');
+                }, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    dropZone.classList.remove('bg-neutral-800', 'border-brand-500');
+                }, false);
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                if (files && files.length > 0) {
+                    processFile(files[0]);
+                }
+            });
+        }
+
+        // Custom Prompt Alert Helper
+        function triggerAlert(title, message) {
+            document.getElementById('alert-title').innerText = title;
+            document.getElementById('alert-message').innerText = message;
+            document.getElementById('alert-modal').classList.remove('hidden');
+        }
+
+        function closeAlert() {
+            document.getElementById('alert-modal').classList.add('hidden');
+        }
+
+        // Handle Standard Input Selection
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                processFile(file);
+            }
+        }
+
+        function processFile(file) {
+            if (!file.type.startsWith('image/')) {
+                triggerAlert('Unsupported Format', 'Please upload a valid image file.');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                originalSelectedImage = e.target.result;
+                triggerAnalysisAnimation(originalSelectedImage);
+            }
+            reader.readAsDataURL(file);
+        }
+
+        // Simulate Action Snaps
+        function simulateCameraSnap() {
+            const ramenPresetImage = "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?q=80&w=600&auto=format&fit=crop";
+            originalSelectedImage = ramenPresetImage;
+            triggerAnalysisAnimation(ramenPresetImage);
+        }
+
+        // Run Scanning Sequence
+        function triggerAnalysisAnimation(imageSrc) {
+            document.getElementById('scanner-panel').classList.add('hidden');
+            document.getElementById('scanning-panel').classList.remove('hidden');
+            document.getElementById('scanned-image-preview').src = imageSrc;
+
+            const activeKey = getApiKey();
+            if (activeKey) {
+                analyzeImageWithGemini(imageSrc);
+            } else {
+                setTimeout(() => {
+                    // Auto-append Tonkotsu Ramen demo or custom mock dish to history if not exists
+                    const isDefaultRamenInHistory = scanHistory.some(item => item.dishName === currentDish.dishName);
+                    if (!isDefaultRamenInHistory) {
+                        pushDishToHistory(currentDish, imageSrc);
+                    }
+                    populateUIPanel(currentDish);
+                    revealResultsPanel(imageSrc);
+                }, 3000);
+            }
+        }
+
+        // Append a dish to scan history and refresh the Left Sidebar
+        function pushDishToHistory(dishData, imageSrc) {
+            const newHistoryItem = {
+                id: 'history-' + Date.now(),
+                dishName: dishData.dishName,
+                origin: dishData.origin,
+                invented: dishData.invented,
+                estimatedCalories: dishData.estimatedCalories,
+                funFact: dishData.funFact,
+                ingredients: [...dishData.ingredients],
+                steps: JSON.parse(JSON.stringify(dishData.steps)),
+                imageSrc: imageSrc,
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            };
+            
+            // Avoid adding immediate duplicates of the exact same dish name to history
+            const duplicateIndex = scanHistory.findIndex(item => item.dishName === newHistoryItem.dishName);
+            if (duplicateIndex !== -1) {
+                scanHistory.splice(duplicateIndex, 1);
+            }
+            
+            scanHistory.unshift(newHistoryItem);
+            renderScanHistory();
+        }
+
+        // Load item details on sidebar click
+        function loadHistoryItem(itemId) {
+            const historicalItem = scanHistory.find(item => item.id === itemId);
+            if (historicalItem) {
+                currentDish = historicalItem;
+                populateUIPanel(historicalItem);
+                revealResultsPanel(historicalItem.imageSrc);
+            }
+        }
+
+        // Render Sidebar List Elements
+        function renderScanHistory() {
+            const container = document.getElementById('history-container');
+            const countLabel = document.getElementById('history-count');
+            
+            if (!container) return;
+            container.innerHTML = '';
+            
+            if (countLabel) {
+                countLabel.innerText = scanHistory.length;
+            }
+
+            if (scanHistory.length === 0) {
+                container.innerHTML = `<p class="text-[11px] text-neutral-500 italic text-center py-4 w-full">Your scan journal is empty.</p>`;
+                return;
+            }
+
+            scanHistory.forEach(item => {
+                const button = document.createElement('button');
+                button.onclick = () => loadHistoryItem(item.id);
+                button.className = "flex items-center space-x-2.5 p-2 rounded-xl border border-neutral-800 bg-neutral-900/40 hover:bg-neutral-900 hover:border-brand-500/50 text-left transition-all duration-200 shrink-0 w-[140px] lg:w-full";
+                button.innerHTML = `
+                    <img src="${item.imageSrc}" alt="${item.dishName}" class="w-10 h-10 rounded-lg object-cover bg-neutral-950 border border-neutral-800 flex-shrink-0" onerror="this.src='https://images.unsplash.com/photo-1498837167922-ddd27525d352?q=80&w=150'">
+                    <div class="overflow-hidden min-w-0 flex-1">
+                        <h4 class="text-xs font-bold text-white truncate leading-snug">${item.dishName}</h4>
+                        <p class="text-[10px] text-neutral-400 truncate leading-snug">${item.origin}</p>
+                    </div>
+                `;
+                container.appendChild(button);
+            });
+        }
+
+        // Populate Dashboard UI Elements
+        function populateUIPanel(dishData) {
+            document.getElementById('result-dish-name').innerText = dishData.dishName;
+            document.getElementById('result-origin').innerHTML = `
+                <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                <span class="text-neutral-300">${dishData.origin}</span>
+            `;
+            document.getElementById('result-invented').innerText = dishData.invented;
+            document.getElementById('result-calories').innerHTML = `
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                <span>${dishData.estimatedCalories}</span>
+            `;
+            document.getElementById('result-fun-fact').innerText = dishData.funFact;
+            document.getElementById('overview-para').innerText = `${dishData.dishName} represents a stunning combination of timing, flavor profiles, and sensory mastery.`;
+            
+            const ingList = document.getElementById('ingredients-list');
+            ingList.innerHTML = '';
+            document.getElementById('ingredient-badge').innerText = dishData.ingredients.length;
+
+            dishData.ingredients.forEach((ingredient, index) => {
+                const item = document.createElement('label');
+                item.className = "flex items-center space-x-3 p-3 bg-neutral-900 hover:bg-neutral-800/80 rounded-xl cursor-pointer border border-neutral-800 transition-all";
+                item.innerHTML = `
+                    <input type="checkbox" id="ing-${index}" onchange="updateMiseEnPlaceStatus()" class="rounded text-brand-500 focus:ring-brand-500 bg-neutral-950 border-neutral-800 h-4.5 w-4.5">
+                    <span class="text-xs font-semibold text-neutral-200 select-none">${ingredient}</span>
+                `;
+                ingList.appendChild(item);
+            });
+
+            currentStepIndex = 0;
+            updateStepDisplay(dishData);
+        }
+
+        function updateStepDisplay(dishData) {
+            const step = dishData.steps[currentStepIndex];
+            document.getElementById('step-indicator').innerText = `Step ${currentStepIndex + 1} of ${dishData.steps.length}`;
+            document.getElementById('active-step-title').innerText = step.title;
+            document.getElementById('active-step-body').innerText = step.body;
+
+            const dotsContainer = document.getElementById('step-dots');
+            dotsContainer.innerHTML = '';
+            for(let i=0; i < dishData.steps.length; i++) {
+                const dot = document.createElement('span');
+                dot.className = `w-2 h-2 rounded-full transition-all ${i === currentStepIndex ? 'bg-brand-500 w-4' : 'bg-neutral-800'}`;
+                dotsContainer.appendChild(dot);
+            }
+
+            document.getElementById('prev-step-btn').disabled = (currentStepIndex === 0);
+            const nextBtn = document.getElementById('next-step-btn');
+            if (currentStepIndex === dishData.steps.length - 1) {
+                nextBtn.innerHTML = `<span>Finished</span>`;
+            } else {
+                nextBtn.innerHTML = `<span>Next Step</span> <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" /></svg>`;
+            }
+
+            initTimer(step.timerSeconds || 180);
+        }
+
+        function navigateStep(direction) {
+            const nextIndex = currentStepIndex + direction;
+            if (nextIndex >= 0 && nextIndex < currentDish.steps.length) {
+                currentStepIndex = nextIndex;
+                updateStepDisplay(currentDish);
+            } else if (nextIndex === currentDish.steps.length) {
+                triggerAlert('Perfect Cooking!', 'You have gone through all steps! Bon Appetit.');
+            }
+        }
+
+        // Show Result panel
+        function revealResultsPanel(imageSrc) {
+            document.getElementById('scanning-panel').classList.add('hidden');
+            document.getElementById('results-panel').classList.remove('hidden');
+            document.getElementById('result-photo').src = imageSrc;
+            
+            // Welcome AI Assistant statement
+            appendChatMessage('AI', `I've successfully scanned your photo! It looks like <span class="font-bold text-brand-500">${currentDish.dishName}</span>. Check out the ingredients and detailed steps. Let me know if you need to substitute any item!`);
+        }
+
+        // Reset App State
+        function resetDashboard() {
+            document.getElementById('results-panel').classList.add('hidden');
+            document.getElementById('scanning-panel').classList.add('hidden');
+            document.getElementById('scanner-panel').classList.remove('hidden');
+            document.getElementById('file-input').value = '';
+            originalSelectedImage = null;
+            resetTimer();
+        }
+
+        // Tabs Switching logic
+        function switchTab(tabId) {
+            activeTab = tabId;
+            const tabs = ['details', 'ingredients', 'steps'];
+            tabs.forEach(t => {
+                const tabElement = document.getElementById(`tab-${t}`);
+                const btnElement = document.getElementById(`tab-${t}-btn`);
+                if (t === tabId) {
+                    tabElement.classList.remove('hidden');
+                    btnElement.classList.remove('border-transparent', 'text-neutral-400');
+                    btnElement.classList.add('border-brand-500', 'text-brand-500');
+                } else {
+                    tabElement.classList.add('hidden');
+                    btnElement.classList.remove('border-brand-500', 'text-brand-500');
+                    btnElement.classList.add('border-transparent', 'text-neutral-400');
+                }
+            });
+        }
+
+        function toggleAllIngredients() {
+            const checkboxes = document.querySelectorAll('#ingredients-list input[type="checkbox"]');
+            const someUnchecked = Array.from(checkboxes).some(cb => !cb.checked);
+            checkboxes.forEach(cb => cb.checked = someUnchecked);
+            updateMiseEnPlaceStatus();
+        }
+
+        function updateMiseEnPlaceStatus() {
+            const checkboxes = document.querySelectorAll('#ingredients-list input[type="checkbox"]');
+            checkboxes.forEach(cb => {
+                const labelText = cb.nextElementSibling;
+                if (cb.checked) {
+                    labelText.classList.add('line-through', 'text-neutral-500');
+                    labelText.classList.remove('text-neutral-200');
+                } else {
+                    labelText.classList.remove('line-through', 'text-neutral-500');
+                    labelText.classList.add('text-neutral-200');
+                }
+            });
+        }
+
+        // Cooking Timer logic
+        function initTimer(seconds) {
+            clearInterval(timerInterval);
+            timerSecondsLeft = seconds;
+            timerTotalDuration = seconds;
+            timerIsActive = false;
+            document.getElementById('timer-toggle-btn').innerText = 'Start';
+            updateTimerDisplay();
+        }
+
+        function toggleTimer() {
+            if (timerIsActive) {
+                clearInterval(timerInterval);
+                document.getElementById('timer-toggle-btn').innerText = 'Start';
+                timerIsActive = false;
+            } else {
+                timerIsActive = true;
+                document.getElementById('timer-toggle-btn').innerText = 'Pause';
+                timerInterval = setInterval(() => {
+                    if (timerSecondsLeft > 0) {
+                        timerSecondsLeft--;
+                        updateTimerDisplay();
+                    } else {
+                        clearInterval(timerInterval);
+                        timerIsActive = false;
+                        document.getElementById('timer-toggle-btn').innerText = 'Finished';
+                        triggerAlert('Timer Finished', 'Time is up! Head over to the next cooking step.');
+                    }
+                }, 1000);
+            }
+        }
+
+        // Initialize status indicators, Scan History sidebar, and default presets on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            const activeKey = getApiKey();
+            const dot = document.getElementById('api-status-dot');
+            const text = document.getElementById('api-status-text');
+            if (activeKey) {
+                if (dot) dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse";
+                if (text) text.innerText = "Gemini Live Mode";
+            } else {
+                if (dot) dot.className = "w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse";
+                if (text) text.innerText = "Local Mock Mode";
+            }
+            
+            // Initialize with custom scan history loaded
+            renderScanHistory();
+        });
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timerSecondsLeft = timerTotalDuration;
+            timerIsActive = false;
+            document.getElementById('timer-toggle-btn').innerText = 'Start';
+            updateTimerDisplay();
+        }
+
+        function updateTimerDisplay() {
+            const mins = Math.floor(timerSecondsLeft / 60);
+            const secs = timerSecondsLeft % 60;
+            document.getElementById('timer-display').innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            
+            const circle = document.getElementById('timer-progress-ring');
+            if (circle) {
+                const circumference = 2 * Math.PI * 20;
+                const progress = timerTotalDuration > 0 ? (timerSecondsLeft / timerTotalDuration) : 0;
+                circle.style.strokeDashoffset = (circumference - progress * circumference).toFixed(2);
+            }
+        }
+
+        // API Key Block Management
+        function toggleApiKeySection() {
+            const section = document.getElementById('key-section');
+            const arrow = document.getElementById('key-arrow');
+            section.classList.toggle('hidden');
+            arrow.classList.toggle('rotate-180');
+        }
+
+        function saveApiKey() {
+            const val = document.getElementById('api-key-input').value.trim();
+            const dot = document.getElementById('api-status-dot');
+            const text = document.getElementById('api-status-text');
+            if (val) {
+                savedApiKey = val;
+                if (dot) dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse";
+                if (text) text.innerText = "Gemini Live Mode";
+                triggerAlert('API Connected', 'Live API verification is enabled! Any custom upload will now be analyzed in real-time by Gemini 2.5 Flash.');
+                toggleApiKeySection();
+            } else {
+                savedApiKey = "";
+                if (getApiKey()) {
+                    if (dot) dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse";
+                    if (text) text.innerText = "Gemini Live Mode";
+                } else {
+                    if (dot) dot.className = "w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse";
+                    if (text) text.innerText = "Local Mock Mode";
+                }
+            }
+        }
+
+        // Robust fetch wrapper that tests both production and preview endpoints to avoid 404s
+        async function callGeminiAPI(payload) {
+            const activeKey = getApiKey();
+            const models = ["gemini-2.5-flash", "gemini-2.5-flash-preview-09-2025"];
+            
+            for (const model of models) {
+                const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(activeKey)}`;
+                try {
+                    const response = await fetchWithBackoff(endpoint, payload);
+                    if (response.ok) {
+                        return response;
+                    }
+                    if (response.status === 404) {
+                        console.warn(`Model ${model} returned 404, attempting next model fallback...`);
+                        continue;
+                    }
+                    throw new Error(`HTTP Error Status: ${response.status}`);
+                } catch (err) {
+                    if (model === models[models.length - 1]) {
+                        throw err; // Re-throw if all attempts failed
+                    }
+                }
+            }
+        }
+
+        // Live Image Analysis via Gemini 2.5 Flash API
+        async function analyzeImageWithGemini(base64ImageSource) {
+            let rawBase64 = base64ImageSource;
+            let mimeType = "image/png";
+            
+            if (base64ImageSource.startsWith("data:")) {
+                const parts = base64ImageSource.split(",");
+                rawBase64 = parts[1];
+                mimeType = parts[0].split(";")[0].split(":")[1];
+            }
+
+            const payload = {
+                contents: [
+                    {
+                        role: "user",
+                        parts: [
+                            {
+                                text: `You are a culinary vision API. Analyze the image and output structured JSON only. Be accurate about what dish is present. Format your response STRICTLY as a JSON object inside valid JSON format without markdown ticks, keeping key elements:
+                                {
+                                  "dishName": "Name of Dish",
+                                  "origin": "City, Country of origin",
+                                  "invented": "Rough estimate date of origin",
+                                  "estimatedCalories": "~Estimated calories based on standard dish portion size",
+                                  "funFact": "Single sentence fun culinary history/science fact",
+                                  "ingredients": ["Ingredient 1", "Ingredient 2", "Ingredient 3", "Ingredient 4", "Ingredient 5", "Ingredient 6"],
+                                  "steps": [
+                                    { "title": "Prep phase title", "body": "Instruction details", "timerSeconds": 180 },
+                                    { "title": "Step 2 title", "body": "Instruction details", "timerSeconds": 300 }
+                                  ]
+                                }`
+                            },
+                            {
+                                inlineData: {
+                                    mimeType: mimeType,
+                                    data: rawBase64
+                                }
+                            }
+                        ]
+                    }
+                ],
+                generationConfig: {
+                    responseMimeType: "application/json"
+                }
+            };
+
+            try {
+                const response = await callGeminiAPI(payload);
+                const data = await response.json();
+                
+                const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (!responseText) {
+                    throw new Error("Invalid response format received from Gemini.");
+                }
+
+                const parsedData = JSON.parse(responseText);
+                currentDish = parsedData; 
+                pushDishToHistory(parsedData, base64ImageSource);
+                populateUIPanel(parsedData);
+                revealResultsPanel(base64ImageSource);
+
+            } catch (err) {
+                console.error("Gemini API Error:", err);
+                triggerAlert('API Offline / Issue', 'Failed to retrieve analysis from Gemini live connection. Falling back gracefully to the local demo database.');
+                
+                // Add default ramen to history log if not already present
+                pushDishToHistory(currentDish, base64ImageSource);
+                populateUIPanel(currentDish);
+                revealResultsPanel(base64ImageSource);
+            }
+        }
+
+        // Fetch with Backoff Mechanism
+        async function fetchWithBackoff(url, payload, retries = 5, delay = 1000) {
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        return response;
+                    }
+                    if (retries > 0 && response.status >= 500) {
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        return fetchWithBackoff(url, payload, retries - 1, delay * 2);
+                    }
+                    throw new Error(`HTTP Error Status: ${response.status}`);
+                }
+                return response;
+            } catch (error) {
+                if (retries > 0) {
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    return fetchWithBackoff(url, payload, retries - 1, delay * 2);
+                }
+                throw error;
+            }
+        }
+
+        // Chatbot Interface Interaction & Typing Indicators
+        function showTypingIndicator() {
+            const chatHistory = document.getElementById('chat-history');
+            const existing = document.getElementById('typing-indicator');
+            if (existing) existing.remove();
+
+            const indicator = document.createElement('div');
+            indicator.id = 'typing-indicator';
+            indicator.className = 'flex items-start space-x-2.5';
+            indicator.innerHTML = `
+                <div class="w-7 h-7 bg-brand-500 rounded-full flex items-center justify-center text-white text-[10px] shrink-0 font-bold">AI</div>
+                <div class="bg-neutral-900 border border-neutral-800 rounded-2xl rounded-tl-none p-3 max-w-[85%] text-xs text-neutral-400 shadow-sm leading-relaxed flex items-center space-x-1">
+                    <span>Chef is writing</span>
+                    <span class="flex space-x-1 items-center pt-0.5">
+                        <span class="w-1 h-1 bg-neutral-400 rounded-full animate-bounce" style="animation-delay: 0ms"></span>
+                        <span class="w-1 h-1 bg-neutral-400 rounded-full animate-bounce" style="animation-delay: 150ms"></span>
+                        <span class="w-1 h-1 bg-neutral-400 rounded-full animate-bounce" style="animation-delay: 300ms"></span>
+                    </span>
+                </div>
+            `;
+            chatHistory.appendChild(indicator);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const indicator = document.getElementById('typing-indicator');
+            if (indicator) {
+                indicator.remove();
+            }
+        }
+
+        async function submitChatMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            if (!message) return;
+
+            input.value = '';
+            appendChatMessage('User', message);
+
+            // Trigger natural Chef thinking state
+            showTypingIndicator();
+
+            const activeKey = getApiKey();
+            if (activeKey) {
+                await askAssistantWithGemini(message);
+            } else {
+                setTimeout(() => {
+                    const response = generateMockAssistantResponse(message);
+                    removeTypingIndicator();
+                    appendChatMessage('AI', response);
+                }, 1000);
+            }
+        }
+
+        function handleChatSubmit(event) {
+            if (event.key === 'Enter') {
+                submitChatMessage();
+            }
+        }
+
+        function appendChatMessage(sender, text) {
+            const chatHistory = document.getElementById('chat-history');
+            const block = document.createElement('div');
+            block.className = `flex items-start space-x-2.5 ${sender === 'User' ? 'justify-end' : ''}`;
+            
+            if (sender === 'AI') {
+                block.innerHTML = `
+                    <div class="w-7 h-7 bg-brand-500 rounded-full flex items-center justify-center text-white text-[10px] shrink-0 font-bold">AI</div>
+                    <div class="bg-neutral-900 border border-neutral-800 rounded-2xl rounded-tl-none p-3 max-w-[85%] text-xs text-neutral-200 shadow-sm leading-relaxed">
+                        ${text}
+                    </div>
+                `;
+            } else {
+                block.innerHTML = `
+                    <div class="bg-brand-500 text-white rounded-2xl rounded-tr-none p-3 max-w-[85%] text-xs shadow-sm leading-relaxed">
+                        ${text}
+                    </div>
+                    <div class="w-7 h-7 bg-neutral-800 border border-neutral-700 rounded-full flex items-center justify-center text-neutral-300 text-[10px] shrink-0 font-bold">ME</div>
+                `;
+            }
+
+            chatHistory.appendChild(block);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+
+        // Live Chat Assistant Call using Gemini 2.5 Flash
+        async function askAssistantWithGemini(userPrompt) {
+            const systemPrompt = `You are a professional Michelin-star sous chef assistant helping with a culinary dashboard of the identified dish: "${currentDish.dishName}" from "${currentDish.origin}". Give succinct, expert advice. Do not output markdown code blocks. Always provide practical culinary hints.`;
+            
+            const payload = {
+                contents: [{
+                    parts: [{
+                        text: `${systemPrompt}\n\nUser Question: ${userPrompt}`
+                    }]
+                }]
+            };
+
+            try {
+                const response = await callGeminiAPI(payload);
+                const data = await response.json();
+                const aiResponseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+                
+                removeTypingIndicator();
+                if (aiResponseText) {
+                    appendChatMessage('AI', aiResponseText);
+                } else {
+                    appendChatMessage('AI', "I couldn't quite analyze that query. Please ask me about ingredients, timing, or plating!");
+                }
+            } catch (err) {
+                console.error("Gemini Assistant Error:", err);
+                removeTypingIndicator();
+                const fallbackResponse = generateMockAssistantResponse(userPrompt);
+                appendChatMessage('AI', fallbackResponse);
+            }
+        }
+
+        // Sophisticated culinary responses dictionary for Mock state
+        function generateMockAssistantResponse(userMsg) {
+            const q = userMsg.toLowerCase();
+            if (q.includes('substitute') || q.includes('replace') || q.includes('alternative')) {
+                return `For <span class="font-bold text-brand-500">${currentDish.dishName}</span>, excellent custom adjustments exist! If you cannot find specialty pork bones, chicken backs combined with marrow beef bones create an equally rich stock. Vegan substitutes include shiitake and kombu bases boiled with soy milk.`;
+            }
+            if (q.includes('how long') || q.includes('time') || q.includes('duration')) {
+                return `The preparation steps take roughly 12 to 18 hours, though most of that is unattended simmering time. Active cooking time is around 2.5 hours total.`;
+            }
+            if (q.includes('pair') || q.includes('wine') || q.includes('drink')) {
+                return `With this dish, try dry sake, cold crisp Pilsner beers, or light Pinot Noir. The acidity contrasts delightfully with the rich, natural collagens of the savory broth.`;
+            }
+            if (q.includes('nutrition') || q.includes('calorie') || q.includes('healthy')) {
+                return `This dish has approximately 850 calories, with rich sodium levels. To optimize for health, reduce tare sauce proportions and add soft braised bok choy, mushrooms, and bamboo shoots.`;
+            }
+            return `I am highly knowledgeable about cooking <span class="font-bold text-brand-500">${currentDish.dishName}</span>! Ask me about:
+                <ul class="list-disc pl-4 mt-2 space-y-1">
+                    <li>Recommended ingredient substitutions</li>
+                    <li>Sake/wine pairings</li>
+                    <li>How to optimize preparation time</li>
+                </ul>`;
+        }
+
+    </script>
+</body>
+</html>
